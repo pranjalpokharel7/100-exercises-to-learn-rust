@@ -13,6 +13,38 @@
 // You don't have to though: it's perfectly okay to write three separate
 // implementations manually. Venture further only if you're curious.
 
+// Exponent = Self is essentially providing default type parameter for Exponent
+// This means that if you don't specify the Exponent type when using the trait, it will default to the type that implements the trait.
+pub trait Power<Exponent = Self> {
+    type Output;
+
+    fn power(&self, p: Exponent) -> Self::Output;
+}
+
+impl Power<u16> for u32 {
+    type Output = u32;
+
+    fn power(&self, p: u16) -> Self::Output {
+        self.pow(p.into())
+    }
+}
+
+impl Power for u32 {
+    type Output = u32;
+
+    fn power(&self, p: u32) -> Self::Output {
+        self.pow(p)
+    }
+}
+
+impl Power<&u32> for u32 {
+    type Output = u32;
+
+    fn power(&self, p: &u32) -> Self::Output {
+        self.pow(*p)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::Power;
