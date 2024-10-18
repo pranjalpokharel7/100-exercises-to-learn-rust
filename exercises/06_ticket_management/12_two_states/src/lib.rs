@@ -6,6 +6,8 @@
 // You also need to add a `get` method that takes as input a `TicketId`
 // and returns an `Option<&Ticket>`.
 
+use std::cmp::max;
+
 use ticket_fields::{TicketDescription, TicketTitle};
 
 #[derive(Clone)]
@@ -44,8 +46,23 @@ impl TicketStore {
         }
     }
 
-    pub fn add_ticket(&mut self, ticket: Ticket) {
-        self.tickets.push(ticket);
+    pub fn add_ticket(&mut self, ticket: TicketDraft) -> TicketId {
+        let mut id: u64 = 0;
+        for t in &self.tickets {
+            id = max(id, t.id.0);
+        }
+        let tk = Ticket {
+            title: ticket.title,
+            description: ticket.description,
+            id: TicketId(id + 1),
+            status: Status::ToDo,
+        };
+        self.tickets.push(tk);
+        TicketId(id + 1)
+    }
+
+    pub fn get(&self, id: TicketId) -> Option<&Ticket> {
+        self.tickets.iter().find(|&t| t.id == id)
     }
 }
 
