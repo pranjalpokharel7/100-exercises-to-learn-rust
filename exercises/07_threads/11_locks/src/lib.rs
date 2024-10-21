@@ -76,7 +76,7 @@ pub fn server(receiver: Receiver<Command>) {
                 response_channel,
             }) => {
                 let ticket = store.get(id);
-                let _ = response_channel.send(ticket);
+                let _ = response_channel.send(ticket.cloned());
             }
             Err(_) => {
                 // There are no more senders, so we can safely break
